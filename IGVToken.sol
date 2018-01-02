@@ -30,18 +30,16 @@ contract IGVToken is ERC677Token, SafeMath {
 
     // constructor
     function IGVToken(
-        address _ethReceiver,
-        address _devReceiver,
         uint256 _fundingStartBlock,
-        uint256 _fundingEndBlock)
+        uint256 _fundingEndBlock
+        )
+        public
     {
       fundOver = false;
-
-      ethReceiver = _ethReceiver;
-      devReceiver = _devReceiver;
-
       fundingStartBlock = _fundingStartBlock;
       fundingEndBlock = _fundingEndBlock;
+      ethReceiver = msg.sender;
+      devReceiver = msg.sender;
     }
 
     function createTokens() payable external {
@@ -64,7 +62,9 @@ contract IGVToken is ERC677Token, SafeMath {
       totalSupply = checkedSupply;
       balances[msg.sender] += tokens;
       balances[devReceiver] += devTokens;
+
       CreateIGV(msg.sender, tokens);
+      CreateIGV(devReceiver, tokens);
     }
 
     function finalize() external {
